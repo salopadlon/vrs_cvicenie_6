@@ -202,12 +202,10 @@ void SysTick_Handler(void)
   */
 void USART2_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART2_IRQn 0 */
-
-  /* USER CODE END USART2_IRQn 0 */
-  /* USER CODE BEGIN USART2_IRQn 1 */
-
-  /* USER CODE END USART2_IRQn 1 */
+	if(LL_USART_IsActiveFlag_RXNE(USART2))
+	{
+		rx_usart2(LL_USART_ReceiveData8(USART2));
+	}
 }
 
 /* USER CODE BEGIN 1 */

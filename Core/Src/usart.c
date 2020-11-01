@@ -20,9 +20,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
 
-/* USER CODE BEGIN 0 */
+static void (* usart2_callback)(uint8_t) = 0;
 
-/* USER CODE END 0 */
+void USART2_RegisterCallback(void *callback)
+{
+	usart2_callback = callback;
+}
 
 /* USART2 init function */
 
@@ -64,6 +67,14 @@ void MX_USART2_UART_Init(void)
   LL_USART_ConfigAsyncMode(USART2);
   LL_USART_Enable(USART2);
 
+}
+
+void rx_usart2(uint8_t ch)
+{
+	if (usart2_callback != 0)
+	{
+		usart2_callback(ch);
+	}
 }
 
 /* USER CODE BEGIN 1 */

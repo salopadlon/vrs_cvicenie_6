@@ -43,15 +43,12 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
+char string[8];
+uint8_t it = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
+void process_serial_data(uint8_t ch);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -93,21 +90,31 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
 
-  /* USER CODE END 2 */
+  USART2_RegisterCallback(process_serial_data);
+  char *tx_data;
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+	  if((LL_GPIO_ReadInputPort(LED_GPIO_Port) & (1 << 3)) >> 3) {
+		  char state[] = "LED ON ";
+		  tx_data = state;
+	  }
 
-    /* USER CODE BEGIN 3 */
+	  else {
+		  char state[] = "LED OFF ";
+		  tx_data = state;
+	  }
+
+	  while(*tx_data) {
+		  while(LL_USART_IsActiveFlag_TXE(USART2)) {
+			  LL_USART_TransmitData8(USART2, *tx_data++);
+		  }
+	  }
+
+	  LL_mDelay(1000);
   }
-  /* USER CODE END 3 */
 }
-
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -140,9 +147,46 @@ void SystemClock_Config(void)
   LL_SetSystemCoreClock(8000000);
 }
 
-/* USER CODE BEGIN 4 */
+void process_serial_data(uint8_t ch)
+{
+	static uint8_t count = 0;
+//	string[it] = ch;
+//	it++;
+//
+//	if (string[0] != 'l') {
+//		it = 0;
+//	}
+//
+//	if (strcmp(string,'ledon')) {
+//		LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
+//		it = 0;
+//	}
+//
+//	if (strcmp(string,'ledoff')) {
+//		LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
+//		it = 0;
+//	}
 
-/* USER CODE END 4 */
+	if(ch == 'a')
+	{
+		count++;
+
+		if(count >= 3)
+		{
+			if((LL_GPIO_ReadInputPort(LED_GPIO_Port) & (1 << 3)) >> 3)
+			{
+				LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
+			}
+			else
+			{
+				LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
+			}
+
+			count = 0;
+			return;
+		}
+	}
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
