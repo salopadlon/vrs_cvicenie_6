@@ -21,6 +21,7 @@
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
+#include <string.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -42,9 +43,6 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
-char string[8];
-uint8_t it = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -97,13 +95,11 @@ int main(void)
   while (1)
   {
 	  if((LL_GPIO_ReadInputPort(LED_GPIO_Port) & (1 << 3)) >> 3) {
-		  char state[] = "LED ON ";
-		  tx_data = state;
+		  tx_data = "LED ON ";
 	  }
 
 	  else {
-		  char state[] = "LED OFF ";
-		  tx_data = state;
+		  tx_data = "LED OFF ";
 	  }
 
 	  while(*tx_data) {
@@ -149,42 +145,33 @@ void SystemClock_Config(void)
 
 void process_serial_data(uint8_t ch)
 {
-	static uint8_t count = 0;
-//	string[it] = ch;
-//	it++;
-//
-//	if (string[0] != 'l') {
-//		it = 0;
-//	}
-//
-//	if (strcmp(string,'ledon')) {
-//		LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-//		it = 0;
-//	}
-//
-//	if (strcmp(string,'ledoff')) {
-//		LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
-//		it = 0;
-//	}
+	static char string[8];
+	static uint8_t it = 0;
 
-	if(ch == 'a')
-	{
-		count++;
+	if (ch == 'l' || ch == 'e' || ch == 'd' || ch == 'O' || ch == 'N' || ch == 'F') {
+		string[it++] = ch;
 
-		if(count >= 3)
-		{
-			if((LL_GPIO_ReadInputPort(LED_GPIO_Port) & (1 << 3)) >> 3)
-			{
-				LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
-			}
-			else
-			{
-				LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-			}
-
-			count = 0;
-			return;
+		if (it >= 8) {
+			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+			it = 0;
 		}
+
+		if (strstr(string,"ledON")) {
+			LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
+			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+			it = 0;
+		}
+
+		if (strstr(string,"ledOFF")) {
+			LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
+			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+			it = 0;
+		}
+	}
+
+	else {
+		for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+		it = 0;
 	}
 }
 

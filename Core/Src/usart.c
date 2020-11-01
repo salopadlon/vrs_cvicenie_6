@@ -65,6 +65,10 @@ void MX_USART2_UART_Init(void)
   LL_USART_Init(USART2, &USART_InitStruct);
   LL_USART_DisableIT_CTS(USART2);
   LL_USART_ConfigAsyncMode(USART2);
+
+  //Enable RXNE interrupt from USART
+  LL_USART_EnableIT_RXNE(USART2);
+
   LL_USART_Enable(USART2);
 
 }
