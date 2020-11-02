@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020004  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00004528  00000000  00000000  00020034  2**0
+ 12 .debug_info   00004538  00000000  00000000  00020034  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001134  00000000  00000000  0002455c  2**0
+ 13 .debug_abbrev 00001134  00000000  00000000  0002456c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000528  00000000  00000000  00025690  2**3
+ 14 .debug_aranges 00000528  00000000  00000000  000256a0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000490  00000000  00000000  00025bb8  2**3
+ 15 .debug_ranges 00000490  00000000  00000000  00025bc8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  0001588a  00000000  00000000  00026048  2**0
+ 16 .debug_macro  0001588a  00000000  00000000  00026058  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00003bf8  00000000  00000000  0003b8d2  2**0
+ 17 .debug_line   00003bf6  00000000  00000000  0003b8e2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00072521  00000000  00000000  0003f4ca  2**0
+ 18 .debug_str    00072521  00000000  00000000  0003f4d8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000b19eb  2**0
+ 19 .comment      0000007b  00000000  00000000  000b19f9  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000013d4  00000000  00000000  000b1a68  2**2
+ 20 .debug_frame  000013d4  00000000  00000000  000b1a74  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -864,8 +864,7 @@ void process_serial_data(uint8_t ch)
  8000610:	af00      	add	r7, sp, #0
  8000612:	4603      	mov	r3, r0
  8000614:	71fb      	strb	r3, [r7, #7]
-//	static uint8_t count = 0;
-	static char string[8];
+	static char string[6];
 	static uint8_t it = 0;
 
 	if (ch == 'l' || ch == 'e' || ch == 'd' || ch == 'O' || ch == 'N' || ch == 'F') {
@@ -899,12 +898,12 @@ void process_serial_data(uint8_t ch)
  800064a:	79fb      	ldrb	r3, [r7, #7]
  800064c:	5453      	strb	r3, [r2, r1]
 
-		if (it >= 8) {
+		if (it > 6) {
  800064e:	4b2f      	ldr	r3, [pc, #188]	; (800070c <process_serial_data+0x100>)
  8000650:	781b      	ldrb	r3, [r3, #0]
- 8000652:	2b07      	cmp	r3, #7
+ 8000652:	2b06      	cmp	r3, #6
  8000654:	d90f      	bls.n	8000676 <process_serial_data+0x6a>
-			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+			for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
  8000656:	2300      	movs	r3, #0
  8000658:	73fb      	strb	r3, [r7, #15]
  800065a:	e006      	b.n	800066a <process_serial_data+0x5e>
@@ -916,7 +915,7 @@ void process_serial_data(uint8_t ch)
  8000666:	3301      	adds	r3, #1
  8000668:	73fb      	strb	r3, [r7, #15]
  800066a:	7bfb      	ldrb	r3, [r7, #15]
- 800066c:	2b07      	cmp	r3, #7
+ 800066c:	2b05      	cmp	r3, #5
  800066e:	d9f5      	bls.n	800065c <process_serial_data+0x50>
 			it = 0;
  8000670:	4b26      	ldr	r3, [pc, #152]	; (800070c <process_serial_data+0x100>)
@@ -935,7 +934,7 @@ void process_serial_data(uint8_t ch)
  8000684:	2108      	movs	r1, #8
  8000686:	4824      	ldr	r0, [pc, #144]	; (8000718 <process_serial_data+0x10c>)
  8000688:	f7ff ff2b 	bl	80004e2 <LL_GPIO_SetOutputPin>
-			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+			for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
  800068c:	2300      	movs	r3, #0
  800068e:	73bb      	strb	r3, [r7, #14]
  8000690:	e006      	b.n	80006a0 <process_serial_data+0x94>
@@ -947,7 +946,7 @@ void process_serial_data(uint8_t ch)
  800069c:	3301      	adds	r3, #1
  800069e:	73bb      	strb	r3, [r7, #14]
  80006a0:	7bbb      	ldrb	r3, [r7, #14]
- 80006a2:	2b07      	cmp	r3, #7
+ 80006a2:	2b05      	cmp	r3, #5
  80006a4:	d9f5      	bls.n	8000692 <process_serial_data+0x86>
 			it = 0;
  80006a6:	4b19      	ldr	r3, [pc, #100]	; (800070c <process_serial_data+0x100>)
@@ -966,7 +965,7 @@ void process_serial_data(uint8_t ch)
  80006ba:	2108      	movs	r1, #8
  80006bc:	4816      	ldr	r0, [pc, #88]	; (8000718 <process_serial_data+0x10c>)
  80006be:	f7ff ff1e 	bl	80004fe <LL_GPIO_ResetOutputPin>
-			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+			for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
  80006c2:	2300      	movs	r3, #0
  80006c4:	737b      	strb	r3, [r7, #13]
  80006c6:	e006      	b.n	80006d6 <process_serial_data+0xca>
@@ -978,7 +977,7 @@ void process_serial_data(uint8_t ch)
  80006d2:	3301      	adds	r3, #1
  80006d4:	737b      	strb	r3, [r7, #13]
  80006d6:	7b7b      	ldrb	r3, [r7, #13]
- 80006d8:	2b07      	cmp	r3, #7
+ 80006d8:	2b05      	cmp	r3, #5
  80006da:	d9f5      	bls.n	80006c8 <process_serial_data+0xbc>
 			it = 0;
  80006dc:	4b0b      	ldr	r3, [pc, #44]	; (800070c <process_serial_data+0x100>)
@@ -990,7 +989,7 @@ void process_serial_data(uint8_t ch)
 	}
 
 	else {
-		for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
+		for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
  80006e4:	2300      	movs	r3, #0
  80006e6:	733b      	strb	r3, [r7, #12]
  80006e8:	e006      	b.n	80006f8 <process_serial_data+0xec>
@@ -1002,17 +1001,13 @@ void process_serial_data(uint8_t ch)
  80006f4:	3301      	adds	r3, #1
  80006f6:	733b      	strb	r3, [r7, #12]
  80006f8:	7b3b      	ldrb	r3, [r7, #12]
- 80006fa:	2b07      	cmp	r3, #7
+ 80006fa:	2b05      	cmp	r3, #5
  80006fc:	d9f5      	bls.n	80006ea <process_serial_data+0xde>
 		it = 0;
  80006fe:	4b03      	ldr	r3, [pc, #12]	; (800070c <process_serial_data+0x100>)
  8000700:	2200      	movs	r2, #0
  8000702:	701a      	strb	r2, [r3, #0]
-//
-//			count = 0;
-//			return;
-//		}
-//	}
+	}
 }
  8000704:	bf00      	nop
  8000706:	3710      	adds	r7, #16
