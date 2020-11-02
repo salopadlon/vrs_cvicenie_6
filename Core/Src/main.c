@@ -145,32 +145,33 @@ void SystemClock_Config(void)
 
 void process_serial_data(uint8_t ch)
 {
-	static char string[6];
+	static char string[8];
 	static uint8_t it = 0;
 
 	if (ch == 'l' || ch == 'e' || ch == 'd' || ch == 'O' || ch == 'N' || ch == 'F') {
 		string[it++] = ch;
 
-		if (it > 6) {
-			for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
+		/* Check for buffer overflow */
+		if (it >= 8) {
+			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
 			it = 0;
 		}
 
 		if (strstr(string,"ledON")) {
 			LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-			for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
+			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
 			it = 0;
 		}
 
 		if (strstr(string,"ledOFF")) {
 			LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
-			for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
+			for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
 			it = 0;
 		}
 	}
 
 	else {
-		for(uint8_t i = 0; i < 6; i++) string[i] = 0;  // clear buffer
+		for(uint8_t i = 0; i < 8; i++) string[i] = 0;  // clear buffer
 		it = 0;
 	}
 }
